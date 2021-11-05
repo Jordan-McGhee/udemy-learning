@@ -24,7 +24,7 @@ padding: 0.5rem;
 .nav-links a:hover,
 .nav-links a:active,
 .nav-links a.active {
-background: #fff;
+background: yellow;
 color: #292929;
 }
 
