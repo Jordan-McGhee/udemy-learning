@@ -1,14 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useForm } from "../../shared/hooks/form-hook";
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import Card from "../../shared/components/UIElements/Card";
-import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH } from "../../shared/util/validators";
+import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from "../../shared/util/validators";
 
 import "./Authenticate.css"
 
 const Authenticate = () => {
+
+    const [ isLoginMode, setIsLoginMode ] = useState(true)
+
+    const switchModeHandler = () => {
+
+        if (!isLoginMode) {
+            setFormData({
+                ...formState.inputs,
+                name: undefined
+            }, 
+                formState.inputs.email.isValid && formState.inputs.password.isValid
+            )
+        } else {
+            setFormData({
+                ...formState.inputs,
+                name: {
+                    value: "",
+                    isValid: false
+                }
+            }, false)
+        }
+
+        setIsLoginMode(prevMode => !prevMode)
+    }
+
 
     const formSubmitHandler = event => {
         event.preventDefault();
@@ -19,7 +44,7 @@ const Authenticate = () => {
         formState.password = ""
     }
 
-    const [ formState, inputHandler ] = useForm(
+    const [ formState, inputHandler, setFormData ] = useForm(
         {
             email: {
                 value: "",
@@ -38,6 +63,17 @@ const Authenticate = () => {
         <Card className = "authentication">
             <h2>Login Required</h2>
             <form onSubmit = {formSubmitHandler}>
+
+                { !isLoginMode && 
+                <Input 
+                    id = "name"
+                    element = "input"
+                    type = "text"
+                    label = "Name"
+                    validators = {[ VALIDATOR_REQUIRE ]}
+                    errorText = "Please enter a name"
+                    onInput = { inputHandler }
+                />}
 
                 {/* EMAIL INPUT */}
                 <Input
@@ -62,9 +98,13 @@ const Authenticate = () => {
                 />
 
                 <Button type = "submit" disabled = {!formState.isValid}>
-                    LOGIN
+                    { isLoginMode ? "Login" : "Register"}
                 </Button>
             </form>
+
+            <Button inverse onClick = { switchModeHandler }>
+                { isLoginMode ? "Need to Create an Account?" : "Already a User?"}
+            </Button>
         </Card>
     )
 }
