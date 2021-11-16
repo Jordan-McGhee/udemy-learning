@@ -6,6 +6,7 @@ import Users from "./user/pages/Users";
 import NewPlace from "./places/pages/NewPlace";
 import MainNavigation from "./shared/components/Navigation/MainNavigation";
 import UpdatePlace from "./places/pages/UpdatePlace";
+import Authenticate from "./user/pages/Authenticate";
 
 const App = () => {
   return (
@@ -32,6 +33,11 @@ const App = () => {
           {/* UserPlaces route */}
           <Route path="/:userId/places">
             <UserPlaces />
+          </Route>
+
+          {/* LOGIN/REGISTER */}
+          <Route path="/auth" exact>
+            <Authenticate />
           </Route>
 
           {/* redirects if none of the routes are matched */}
