@@ -4,3 +4,5 @@ const getCoordsForAddress = (address) => {
         lng: -74.9871516
     }
 }
+
+module.exports = getCoordsForAddress
