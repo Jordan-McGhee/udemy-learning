@@ -43,31 +43,68 @@ let DUMMY_PLACES = [
     },
 ]
 
-const getPlaceById = ((req, res, next) => {
+const getPlaceById = async (req, res, next) => {
     const placeID = req.params.placeID
-    const place = DUMMY_PLACES.find(p => {
-        return p.id === placeID
-    })
+
+    let place
+
+    // const place = DUMMY_PLACES.find(p => {
+    //     return p.id === placeID
+    // })
+
+    try{
+        place = await Place.findById(placeID)
+    } catch(err) {
+        const error = new HttpError(
+            "Something went wrong, could not find a place", 500
+        )
+        return next(error)
+    } 
 
     if (!place) {
-        throw new HttpError("Could not find a place for the provided place ID.", 404)
+        const error = new HttpError(
+            "Could not find a place for the provided place ID.", 404
+        )
+        return next(error)
     }
 
-    res.json({ place })
-})
+    res.json({ place: place.toObject( { getters: true } ) })
+}
 
-const getPlacesByUserId = ((req, res, next) => {
+const getPlacesByUserId = async (req, res, next) => {
+    // CODE BEFORE MONGOOSE
+
+    // const userID = req.params.userID
+    // const places = DUMMY_PLACES.filter(p => {
+    //     return p.creator === userID
+    // })
+
+    // if (!places || places.length === 0) {
+    //     return next(new HttpError("Could not find places for the provided user ID.", 404))
+    // }
+
+    // res.json({ places })
+
+    let places
     const userID = req.params.userID
-    const places = DUMMY_PLACES.filter(p => {
-        return p.creator === userID
-    })
-
+    
+    try {
+        places = await Place.find({ creator : userID })
+    } catch(err) {
+        const error = new HttpError(
+            "Something went wrong, could not find places created by that user", 500
+        )
+        return next(error)
+    }
+    
     if (!places || places.length === 0) {
-        return next(new HttpError("Could not find places for the provided place ID.", 404))
+        return next(new HttpError("Could not find places for the provided User ID"), 404)
     }
 
-    res.json({ places })
-})
+    res.json({ places: places.map(place =>
+        place.toObject({getters:true}))
+    })
+}
 
 const createPlace = async (req, res, next) => {
 
