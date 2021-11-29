@@ -23,9 +23,11 @@ const HttpError = require("../models/http-error")
 
 const getUserList = async (req, res, next) => {
     
+    // variable for when we query database for all users
     let users
 
     try {
+        // use .find() to get all users in database. {} & "-password" gives us all user objects, but doesn't add passwords to the query. Passing "name email" instead of "-password" would've worked too
         users = await User.find({}, "-password")
     } catch (err) {
         const error = new HttpError(
@@ -36,6 +38,7 @@ const getUserList = async (req, res, next) => {
         return next(error)
     }
 
+    // .map() applies .toObject({getters: true}) to each user object in the users array
     res.json({users: users.map(user => user.toObject({getters: true}))})
 }
 
@@ -68,6 +71,7 @@ const signUp = async (req, res, next) => {
 
     // DUMMY_USERS.push(createdUser)
 
+    // ensure the info entered is valid
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -80,11 +84,14 @@ const signUp = async (req, res, next) => {
         )
     }
 
+    // grab these fields from req body
     const { name, email, password } = req.body
 
+    // variable to store existing user if there is one
     let existingUser
 
     try {
+        // use findOne() to see if there is any User in the database that has the same email
         existingUser = await User.findOne({ email: email })
     } catch(err) {
         const error = new HttpError(
@@ -95,6 +102,7 @@ const signUp = async (req, res, next) => {
         return next(error)
     }
 
+    // if existingUser is truthy, return an error since that email is already in the database
     if (existingUser) {
         const error = new HttpError(
             "User exists already, please login instead.",
@@ -104,6 +112,7 @@ const signUp = async (req, res, next) => {
         return next(error)
     }
 
+    // if not, create a new instance of the User model, have an array for places since this will be changed when this user creates a place
     const createdUser = new User({
         name,
         email,
@@ -113,6 +122,7 @@ const signUp = async (req, res, next) => {
     })
 
     try {
+        // save user to database
         await createdUser.save()
     } catch(err) {
         const error = new HttpError(
@@ -145,11 +155,14 @@ const userLogin = async (req, res, next) => {
 
     // res.json({ message : `Logged in as ${identifiedUser.name}` })
 
+    // grab email and password from the body
     const { email, password } = req.body
 
+    // variable to store query from database
     let existingUser
 
     try {
+        // query database for a user that has the same email
         existingUser = await User.findOne({ email: email })
     } catch (err) {
         const error = new HttpError(
@@ -160,6 +173,7 @@ const userLogin = async (req, res, next) => {
         return next(error)
     }
 
+    // if existingUser is falsey or the password doesn't match the password stored for the queried user, return an error
     if (!existingUser || existingUser.password !== password) {
         const error = new HttpError(
             "Invalid credentials, could not log you in.",
@@ -172,6 +186,7 @@ const userLogin = async (req, res, next) => {
     res.json({ message: `Logged in as ${ existingUser.name }`})
 }
 
+// functions exported to use in routes
 exports.getUserList = getUserList
 exports.signUp = signUp
 exports.userLogin = userLogin

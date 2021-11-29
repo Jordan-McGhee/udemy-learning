@@ -21,20 +21,25 @@ app.use((req, res, next) => {
     throw new HttpError("Could not find this route.", 404)
 })
 
+// If we reach this middleware, that means we haven't returned a response on any of the above middleware routes
 app.use((error, req, res, next) => {
     if (res.headerSent) {
         return next(error);
     }
 
+    // set the status and message unless there is one attached already
     res.status(error.code || 500);
     res.json({message: error.message || "An unknown error occurred!"});
 })
 
 mongoose
+    // Connect to MongoDB database at above URL
     .connect(url)
+    // listen to the localhost serve
     .then(() => {
         app.listen(5000)
     })
+    // log on any errors
     .catch(err => {
         console.log(err)
     })

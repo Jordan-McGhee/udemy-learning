@@ -10,6 +10,8 @@ router.get("/:placeID", placesControllers.getPlaceById);
 router.get("/user/:userID", placesControllers.getPlacesByUserId);
 
 router.post("/",
+
+    // array of checks using express-validator
     [
         check("title")
             .not()
@@ -24,14 +26,17 @@ router.post("/",
 );
 
 router.patch("/:placeID",
-[
-    check("title")
-    .not()
-    .isEmpty(),
-    check("description")
-    .isLength({min: 5})
-],
-placesControllers.updatePlace);
+
+    // array of checks using express-validator
+    [
+        check("title")
+        .not()
+        .isEmpty(),
+        check("description")
+        .isLength({min: 5})
+    ],
+    placesControllers.updatePlace
+);
 
 router.delete("/:placeID", placesControllers.deletePlace);
 
