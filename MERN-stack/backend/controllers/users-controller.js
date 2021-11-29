@@ -1,24 +1,25 @@
-const uuid = require("uuid").v4
+// const uuid = require("uuid").v4
 const { validationResult } = require("express-validator")
+const mongoose = require("mongoose")
 
 const User = require("../models/user")
 const HttpError = require("../models/http-error")
 
-const DUMMY_USERS = [
-    {
-        id: "u1",
-        name: "Jordan McGhee",
-        email: "test@test.com",
-        password: "password"
-    },
+// const DUMMY_USERS = [
+//     {
+//         id: "u1",
+//         name: "Jordan McGhee",
+//         email: "test@test.com",
+//         password: "password"
+//     },
 
-    {
-        id: "u2",
-        name: "Tori McGhee",
-        email: "test2@test.com",
-        password: "password"
-    },
-]
+//     {
+//         id: "u2",
+//         name: "Tori McGhee",
+//         email: "test2@test.com",
+//         password: "password"
+//     },
+// ]
 
 const getUserList = async (req, res, next) => {
     
@@ -79,7 +80,7 @@ const signUp = async (req, res, next) => {
         )
     }
 
-    const { name, email, password, places } = req.body
+    const { name, email, password } = req.body
 
     let existingUser
 
@@ -108,7 +109,7 @@ const signUp = async (req, res, next) => {
         email,
         image: "https://picsum.photos/200",
         password,
-        places
+        places: []
     })
 
     try {

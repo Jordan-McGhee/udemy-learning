@@ -1,56 +1,15 @@
 const uuid = require("uuid").v4
 const { validationResult } = require("express-validator")
+const mongoose = require("mongoose")
 
 const HttpError = require("../models/http-error")
 const Place = require("../models/place")
-const dummyCoordinates = require("../util/location")
-
-let DUMMY_PLACES = [
-    {
-        id: "p1",
-        title: "Empire State Building",
-        description: "One of the most famous sky scrapers in the world!",
-        location: {
-            lat: 40.7484474,
-            lng: -74.9871516,
-        },
-        address: "20 W 34th St, New York, NY 10001",
-        creator: "u1"
-    },
-
-    {
-        id: "p2",
-        title: "Empire State Building",
-        description: "One of the most famous sky scrapers in the world!",
-        location: {
-            lat: 40.7484474,
-            lng: -74.9871516,
-        },
-        address: "20 W 34th St, New York, NY 10001",
-        creator: "u1"
-    },
-
-    {
-        id: "p3",
-        title: "Empire State Building",
-        description: "One of the most famous sky scrapers in the world!",
-        location: {
-            lat: 40.7484474,
-            lng: -74.9871516,
-        },
-        address: "20 W 34th St, New York, NY 10001",
-        creator: "u1"
-    },
-]
+const User = require("../models/user")
 
 const getPlaceById = async (req, res, next) => {
     const placeID = req.params.placeID
 
     let place
-
-    // const place = DUMMY_PLACES.find(p => {
-    //     return p.id === placeID
-    // })
 
     try{
         place = await Place.findById(placeID)
@@ -90,6 +49,9 @@ const getPlacesByUserId = async (req, res, next) => {
     
     try {
         places = await Place.find({ creator : userID })
+
+        // ALTERNATE WAY TO GET USER PLACES WITH .POPULATE()
+        // places = await User.findById(userID).populate("places")
     } catch(err) {
         const error = new HttpError(
             "Something went wrong, could not find places created by that user", 500
@@ -131,8 +93,43 @@ const createPlace = async (req, res, next) => {
         creator
     })
 
+    let user
+    
+    try {
+        user = await User.findById(creator)
+    } catch(err) {
+        const error = new HttpError(
+            "Creating place failed, please try again",
+            500
+        )
+        return next(error)
+    }
+
+    if (!user) {
+        const error = new HttpError(
+            "We could not find a user with the provided ID.",
+            404
+        )
+        return next(error)
+    }
+
+    console.log(user)
+
     try{
-        await createdPlace.save()
+        const session = await mongoose.startSession()
+        session.startTransaction()
+
+        // STEP 1
+        await createdPlace.save({ session: session })
+
+        // STEP 2
+        user.places.push(createdPlace)
+
+        // STEP 3
+        await user.save({ session: session })
+
+        await session.commitTransaction()
+
     } catch(err) {
         const error = new HttpError(
             'Creating place failed, please try again',
@@ -225,7 +222,7 @@ const deletePlace = async (req, res, next) => {
     let place
 
     try {
-        place = await Place.findById(placeID)
+        place = await Place.findById(placeID).populate("creator")
     } catch(err) {
         const error = new HttpError(
             "Something went wrong, could not find that place.", 500
@@ -234,8 +231,27 @@ const deletePlace = async (req, res, next) => {
         return next(error)
     }
 
+    if (!place) {
+        const error = new HttpError(
+            "Could not find place for this ID", 404
+        )
+
+        return next(error)
+    }
+
+    // console.log(place.creator.places)
+
     try {
-        await place.remove()
+        const session = await mongoose.startSession()
+        session.startTransaction()
+
+        await place.remove({ session: session })
+        place.creator.places.pull(place)
+
+        await place.creator.save({ session: session })
+
+        await session.commitTransaction()
+
     } catch(err) {
         const error = new HttpError(
             "Something went wrong, could not delete that place", 500
