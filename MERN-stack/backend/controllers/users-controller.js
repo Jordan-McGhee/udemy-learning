@@ -73,6 +73,7 @@ const signUp = async (req, res, next) => {
 
     // ensure the info entered is valid
     const errors = validationResult(req);
+    console.log(errors)
 
     if (!errors.isEmpty()) {
         console.log(errors)

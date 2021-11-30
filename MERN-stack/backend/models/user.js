@@ -6,7 +6,7 @@ const Schema = mongoose.Schema
 const userSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, minlength: 8 },
+    password: { type: String, required: true, minlength: 6 },
     image: { type: String, required: true },
 
     // since this ties to another model, need to use this type and add a ref to the place model
