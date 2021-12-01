@@ -60,8 +60,9 @@ const Authenticate = () => {
 
         if (isLoginMode) {
             
+            // LOGIN MODE
+
             try {
-                // LOGIN MODE
                 const response = await fetch("http://localhost:5000/api/users/login", {
                     method: "POST",
                     headers: {
@@ -69,15 +70,14 @@ const Authenticate = () => {
                     },
                     body: JSON.stringify({
                         email: formState.inputs.email.value,
-                        password: formState.inputs.password.value,
+                        password: formState.inputs.password.value
                     })
                 })
 
                 const responseData = await response.json()
-                // console.log(`Response Data: ${responseData.email} ${responseData}`)
+                
 
-                if (!responseData.ok) {
-                    console.log("Entered Ok block")
+                if(!response.ok) {
                     throw new Error(responseData.message)
                 }
 
@@ -85,15 +85,17 @@ const Authenticate = () => {
                 auth.login()
 
             } catch(err) {
-                console.log("Entered catch block block")
+
+                
                 setIsLoading(false)
                 setError(err.message || "Something went wrong, please try again.")
             }
-
+        
         } else {
 
+            // SIGN IN MODE
+
             try {
-                // SIGN IN MODE
                 const response = await fetch("http://localhost:5000/api/users/signup", {
                     method: "POST",
                     headers: {
@@ -102,14 +104,14 @@ const Authenticate = () => {
                     body: JSON.stringify({
                         name: formState.inputs.name.value,
                         email: formState.inputs.email.value,
-                        password: formState.inputs.password.value,
+                        password: formState.inputs.password.value
                     })
                 })
 
                 const responseData = await response.json()
-                console.log(responseData.response)
+                console.log(responseData)
 
-                if (!responseData.ok) {
+                if(!response.ok) {
                     throw new Error(responseData.message)
                 }
 
@@ -117,11 +119,13 @@ const Authenticate = () => {
                 auth.login()
 
             } catch(err) {
-                
+
+                console.log(err)
                 setIsLoading(false)
                 setError(err.message || "Something went wrong, please try again.")
             }
         }
+
     }
 
     const [ formState, inputHandler, setFormData ] = useForm(
