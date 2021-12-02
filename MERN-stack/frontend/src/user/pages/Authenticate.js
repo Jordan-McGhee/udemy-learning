@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 
 import { useForm } from "../../shared/hooks/form-hook";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 import Input from "../../shared/components/FormElements/Input";
 import Button from "../../shared/components/FormElements/Button";
 import Card from "../../shared/components/UIElements/Card";
@@ -18,9 +19,7 @@ const Authenticate = () => {
 
     const [ isLoginMode, setIsLoginMode ] = useState(true)
 
-    const [ isLoading, setIsLoading ] = useState(false)
-
-    const [ error, setError ] = useState()
+    const { isLoading, error, sendRequest, clearError } = useHttpClient()
 
     const switchModeHandler = () => {
 
@@ -56,39 +55,44 @@ const Authenticate = () => {
     const formSubmitHandler = async event => {
         event.preventDefault();
 
-        setIsLoading(true)
-
         if (isLoginMode) {
             
             // LOGIN MODE
 
             try {
-                const response = await fetch("http://localhost:5000/api/users/login", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
+
+                await sendRequest(
+                    // URL
+                    "http://localhost:5000/api/users/login", 
+                    
+                    // METHOD
+                    "POST",
+
+                    // BODY
+                    JSON.stringify({
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
-                    })
-                })
+                    }),
 
-                const responseData = await response.json()
+                    // HEADERS
+                    {
+                        "Content-Type": "application/json"
+                    }
+                )
                 
+                //  THIS CODE BELOW IS DONE INSIDE HOOK
+                // const responseData = await response.json()
+    
+                // if(!response.ok) {
+                //     throw new Error(responseData.message)
+                // }
+    
+                // setIsLoading(false)
 
-                if(!response.ok) {
-                    throw new Error(responseData.message)
-                }
-
-                setIsLoading(false)
                 auth.login()
-
             } catch(err) {
+                // don't need anything here because it's handled in the hook. Can be left blank
 
-                
-                setIsLoading(false)
-                setError(err.message || "Something went wrong, please try again.")
             }
         
         } else {
@@ -96,33 +100,45 @@ const Authenticate = () => {
             // SIGN IN MODE
 
             try {
-                const response = await fetch("http://localhost:5000/api/users/signup", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
+                await sendRequest(
+                    // URL
+                    "http://localhost:5000/api/users/signup",
+
+                    // METHOD
+                    "POST",
+
+                    // BODY
+                    JSON.stringify({
                         name: formState.inputs.name.value,
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value
-                    })
-                })
+                    }),
 
-                const responseData = await response.json()
-                console.log(responseData)
+                    // HEADERS
+                    {
+                        "Content-Type": "application/json"
+                    }
+                )
 
-                if(!response.ok) {
-                    throw new Error(responseData.message)
-                }
+                //  THIS CODE BELOW IS DONE INSIDE HOOK
+                // const responseData = await response.json()
+                // console.log(responseData)
 
-                setIsLoading(false)
+                // if(!response.ok) {
+                //     throw new Error(responseData.message)
+                // }
+
+                // setIsLoading(false)
+
                 auth.login()
 
             } catch(err) {
 
-                console.log(err)
-                setIsLoading(false)
-                setError(err.message || "Something went wrong, please try again.")
+                // don't need anything here because it's handled in the hook. Can be left blank. Below is old code before the hook
+
+                // console.log(err)
+                // setIsLoading(false)
+                // setError(err.message || "Something went wrong, please try again.")
             }
         }
 
@@ -144,14 +160,14 @@ const Authenticate = () => {
     )
 
 
-    const errorHandler = () => {
-        setError(null)
-    }
+    // const errorHandler = () => {
+    //     setError(null)
+    // }
 
     return(
         <React.Fragment>
 
-            <ErrorModal error = {error} onClear = { errorHandler }/>
+            <ErrorModal error = {error} onClear = { clearError }/>
 
             <Card className = "authentication">
 
