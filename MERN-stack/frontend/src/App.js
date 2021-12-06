@@ -13,13 +13,16 @@ const App = () => {
 
   // this holds the current state to determine if user is logged in or not. Starts off as false
   const [ isLoggedIn, setIsLoggedIn ] = useState(false)
+  const [ userID, setUserID ] = useState(null)
 
-  const login = useCallback(() => {
+  const login = useCallback((userID) => {
     setIsLoggedIn(true)
+    setUserID(userID)
   }, [])
 
   const logout = useCallback(() => {
     setIsLoggedIn(false)
+    setUserID(null)
   }, [])
 
   let routes
@@ -79,7 +82,12 @@ const App = () => {
   }
 
   return (
-    <AuthContext.Provider value = {{isLoggedIn: isLoggedIn, login: login, logout: logout}}>
+    <AuthContext.Provider value = {{
+      isLoggedIn: isLoggedIn,
+      userID: userID,
+      login: login,
+      logout: logout
+    }}>
 
       <Router>
         <MainNavigation />

@@ -61,7 +61,7 @@ const Authenticate = () => {
 
             try {
 
-                await sendRequest(
+                const responseData = await sendRequest(
                     // URL
                     "http://localhost:5000/api/users/login", 
                     
@@ -89,7 +89,8 @@ const Authenticate = () => {
     
                 // setIsLoading(false)
 
-                auth.login()
+                auth.login(responseData.user._id)
+                console.log(responseData.user._id)
             } catch(err) {
                 // don't need anything here because it's handled in the hook. Can be left blank
 
@@ -100,7 +101,7 @@ const Authenticate = () => {
             // SIGN IN MODE
 
             try {
-                await sendRequest(
+                const responseData = await sendRequest(
                     // URL
                     "http://localhost:5000/api/users/signup",
 
@@ -130,7 +131,8 @@ const Authenticate = () => {
 
                 // setIsLoading(false)
 
-                auth.login()
+                auth.login(responseData.user._id)
+                console.log(responseData.user._id)
 
             } catch(err) {
 
