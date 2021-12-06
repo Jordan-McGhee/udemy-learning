@@ -184,7 +184,9 @@ const userLogin = async (req, res, next) => {
         return next(error)
     }
 
-    res.json({ message: `Logged in as ${ existingUser.name }`})
+    res.json({
+        message: "Logged in!",
+        user: existingUser.toObject({ gettters: true })})
 }
 
 // functions exported to use in routes
