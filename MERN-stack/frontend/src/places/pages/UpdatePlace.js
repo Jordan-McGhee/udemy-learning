@@ -10,7 +10,6 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
-import react from "react";
 
 
 // const DUMMY_PLACES = [
@@ -93,6 +92,8 @@ const UpdatePlace = () => {
 
             }
         }
+
+        fetchPlace()
     }, [ sendRequest, placeID, setFormData ])
 
     // useEffect(() => {
@@ -153,8 +154,8 @@ const UpdatePlace = () => {
                         validators = {[VALIDATOR_REQUIRE]}
                         errorText = "Please enter a valid title."
                         onInput = {inputHandler}
-                        initialValue = {formState.inputs.title.value}
-                        initialValid = {formState.inputs.title.isValid}
+                        initialValue = {loadedPlace.title}
+                        initialValid = {true}
                     />
 
                     <Input
@@ -164,8 +165,8 @@ const UpdatePlace = () => {
                         validators = {[VALIDATOR_MINLENGTH]}
                         errorText = "Please enter a valid description (min. 5 characters)."
                         onInput = {inputHandler}
-                        initialValue = {formState.inputs.description.value}
-                        initialValid = {formState.inputs.description.isValid}
+                        initialValue = {loadedPlace.description}
+                        initialValid = {true}
                     />
 
                     <Input
@@ -176,8 +177,8 @@ const UpdatePlace = () => {
                         validators = {[VALIDATOR_REQUIRE]}
                         errorText = "Please enter a valid address."
                         onInput = {inputHandler}
-                        initialValue = {formState.inputs.address.value}
-                        initialValid = {formState.inputs.address.isValid}
+                        initialValue = {loadedPlace.address}
+                        initialValid = {true}
                     />
 
                     <Button type="submit" disabled = {!formState.isValid}>
