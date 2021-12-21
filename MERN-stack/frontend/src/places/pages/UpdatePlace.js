@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useParams, useHistory } from "react-router-dom";
 
 import "./PlaceForm.css"
 import Input from "../../shared/components/FormElements/Input";
@@ -10,6 +10,7 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import { AuthContext } from "../../shared/context/auth-context"
 
 
 // const DUMMY_PLACES = [
@@ -42,8 +43,10 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 
 const UpdatePlace = () => {
 
+    const auth = useContext(AuthContext)
     const { isLoading, error, sendRequest, clearError } = useHttpClient()
     const [ loadedPlace, setLoadedPlace ] = useState()
+    const history = useHistory()
 
     const placeID = useParams().placeId
 
@@ -117,9 +120,22 @@ const UpdatePlace = () => {
     //     setIsLoading(false)
     // }, [ setFormData, identifiedPlace ])
 
-    const placeUpdateSubmitHandler = event => {
+    const placeUpdateSubmitHandler = async event => {
         event.preventDefault()
-        console.log(formState.inputs)
+        try {
+            sendRequest(`http://localhost:5000/api/places/${placeID}`, 'PATCH', JSON.stringify({
+                title: formState.inputs.title.value,
+                description: formState.inputs.description.value,
+                address: formState.inputs.address.value
+            }),
+            {
+                "Content-Type": "application/json"
+            })
+
+            history.goBack()
+        } catch(err) {
+
+        }
     }
 
     if (isLoading) {
