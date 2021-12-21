@@ -123,7 +123,7 @@ const UpdatePlace = () => {
     const placeUpdateSubmitHandler = async event => {
         event.preventDefault()
         try {
-            sendRequest(`http://localhost:5000/api/places/${placeID}`, 'PATCH', JSON.stringify({
+            await sendRequest(`http://localhost:5000/api/places/${placeID}`, 'PATCH', JSON.stringify({
                 title: formState.inputs.title.value,
                 description: formState.inputs.description.value,
                 address: formState.inputs.address.value

@@ -54,6 +54,10 @@ const UserPlaces = () => {
     },
         [sendRequest, userID])
 
+    const placeDeleteHandler = (deletedPlaceID) => {
+        setLoadedPlaces(previousPlaces =>
+            previousPlaces.filter(place => place.id !== deletedPlaceID))
+    }
 
     return (
         <React.Fragment>
@@ -61,7 +65,7 @@ const UserPlaces = () => {
             { isLoading && <div>
                 <LoadingSpinner asOverlay />
             </div>}
-            { !isLoading && loadedPlaces && <PlaceList items = {loadedPlaces} />}
+            { !isLoading && loadedPlaces && <PlaceList items = {loadedPlaces} onDeletePlace = { placeDeleteHandler }/>}
         </React.Fragment>
     )
 }
