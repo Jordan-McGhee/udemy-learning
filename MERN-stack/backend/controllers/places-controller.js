@@ -203,7 +203,7 @@ const updatePlace = async (req, res, next) => {
     }
 
     // grab the necessary properties from the form and grab place ID from the URL
-    const { title, description } = req.body
+    const { title, description, address } = req.body
     const placeID = req.params.placeID
 
     // establish variable for when we query database with the place ID
@@ -223,6 +223,7 @@ const updatePlace = async (req, res, next) => {
     // update the place's title and description to the values we pulled from the req.body
     updatedPlace.title = title
     updatedPlace.description = description
+    updatedPlace.address = address
 
     try {
         // await saving the updated place to the database
