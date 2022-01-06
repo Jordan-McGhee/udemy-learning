@@ -13,6 +13,7 @@ const ImageUpload = props => {
 
     const pickImageHandler = () => {
         filePickerRef.current.click()
+        // small change
     }
     return (
         <div className="form-control">
