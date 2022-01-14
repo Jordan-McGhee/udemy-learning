@@ -109,6 +109,12 @@ const Authenticate = () => {
             // SIGN IN MODE
 
             try {
+                const formData = new FormData()
+                formData.append('name', formState.inputs.name.value)
+                formData.append('email', formState.inputs.email.value)
+                formData.append('password', formState.inputs.password.value)
+                formData.append('image', formState.inputs.image.value)
+
                 const responseData = await sendRequest(
                     // URL
                     "http://localhost:5000/api/users/signup",
@@ -117,16 +123,20 @@ const Authenticate = () => {
                     "POST",
 
                     // BODY
-                    JSON.stringify({
-                        name: formState.inputs.name.value,
-                        email: formState.inputs.email.value,
-                        password: formState.inputs.password.value
-                    }),
+
+                    // JSON.stringify({
+                    //     name: formState.inputs.name.value,
+                    //     email: formState.inputs.email.value,
+                    //     password: formState.inputs.password.value
+                    // }),
+
+                    // replaced JSON data because we added image field. DON'T need headers because FormData does it for us
+                    formData
 
                     // HEADERS
-                    {
-                        "Content-Type": "application/json"
-                    }
+                    // {
+                    //     "Content-Type": "application/json"
+                    // }
                 )
 
                 //  THIS CODE BELOW IS DONE INSIDE HOOK
