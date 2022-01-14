@@ -1,3 +1,5 @@
+const fs = require("fs")
+
 const uuid = require("uuid").v4
 const { validationResult } = require("express-validator")
 const mongoose = require("mongoose")
@@ -69,7 +71,7 @@ const getPlacesByUserId = async (req, res, next) => {
     }
     
     // check if the places array is empty or falsey
-    if (!places || places.length === 0) {
+    if (!places) {
         return next(new HttpError("Could not find places for the provided User ID"), 404)
     }
 
@@ -276,6 +278,8 @@ const deletePlace = async (req, res, next) => {
 
     // console.log(place.creator.places)
 
+    const imagePath = place.image
+
     try {
 
         // need a session/transaction here since we will be removing the place from the database and updating the user object's array that is associated with that place  
@@ -297,6 +301,10 @@ const deletePlace = async (req, res, next) => {
         )
         return next(error)
     }
+
+    fs.unlink(imagePath, err => {
+        console.log(err)
+    })
 
     res.status(200).json({ message: "Deleted place."})
 }
