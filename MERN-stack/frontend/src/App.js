@@ -11,8 +11,6 @@ import { AuthContext } from "./shared/context/auth-context";
 
 const App = () => {
 
-  // small change
-
   // this holds the current state to determine if user is logged in or not. Starts off as false
   const [ isLoggedIn, setIsLoggedIn ] = useState(false)
   const [ userID, setUserID ] = useState(null)
