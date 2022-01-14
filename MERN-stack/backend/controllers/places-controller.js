@@ -106,7 +106,7 @@ const createPlace = async (req, res, next) => {
             lat: 40.7484474,
             lng: -74.9871516
         },
-        image: "https://picsum.photos/200",
+        image: req.file.path,
         creator
     })
 

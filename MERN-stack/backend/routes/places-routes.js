@@ -2,6 +2,7 @@ const express = require("express");
 const { check } = require("express-validator");
 
 const placesControllers = require("../controllers/places-controller");
+const fileUpload = require("../middleware/file-upload")
 
 const router = express.Router();
 
@@ -9,7 +10,9 @@ router.get("/:placeID", placesControllers.getPlaceById);
 
 router.get("/user/:userID", placesControllers.getPlacesByUserId);
 
-router.post("/",
+router.post(
+    "/",
+    fileUpload.single("image"),
 
     // array of checks using express-validator
     [
