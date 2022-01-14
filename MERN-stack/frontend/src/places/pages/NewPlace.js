@@ -9,6 +9,7 @@ import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import { AuthContext } from "../../shared/context/auth-context";
 import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook"
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 import "./PlaceForm.css";
 
 const NewPlace = () => {
@@ -31,6 +32,11 @@ const NewPlace = () => {
                 value: "",
                 isValid: false
             },
+
+            image: {
+                value: null,
+                isValid: false
+            }
         },
         false
     )
@@ -41,16 +47,29 @@ const NewPlace = () => {
         event.preventDefault()
         
         try {
-            const responseData = await sendRequest(
+
+            const formData = new FormData()
+
+            formData.append("title", formState.inputs.title.value)
+            formData.append("description", formState.inputs.description.value)
+            formData.append("image", formState.inputs.image.value)
+            formData.append("address", formState.inputs.address.value)
+            formData.append("creator", auth.userID)
+
+            await sendRequest(
                 'http://localhost:5000/api/places',
                 'POST',
-                JSON.stringify({
-                    title: formState.inputs.title.value,
-                    description: formState.inputs.description.value,
-                    address: formState.inputs.address.value,
-                    creator: auth.userID
-                }),
-                { "Content-Type": "application/json"}
+                
+                // OLD CODE BEFORE IMAGE UPLOAD
+                // JSON.stringify({
+                //     title: formState.inputs.title.value,
+                //     description: formState.inputs.description.value,
+                //     address: formState.inputs.address.value,
+                //     creator: auth.userID
+                // }),
+                // { "Content-Type": "application/json"}
+
+                formData
             )
 
             // REDIRECT USER
@@ -75,6 +94,12 @@ const NewPlace = () => {
                     validators={[VALIDATOR_REQUIRE()]}
                     errorText="Please enter a valid title"
                     onInput = {inputHandler}
+                />
+
+                <ImageUpload
+                    id="image"
+                    onInput = {inputHandler}
+                    error = "Please provide an image."
                 />
 
                 <Input

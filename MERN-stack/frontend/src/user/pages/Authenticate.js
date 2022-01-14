@@ -213,6 +213,7 @@ const Authenticate = () => {
                         center
                         id= "image"
                         onInput = { inputHandler }
+                        errorText = "Please provide an image."
                     />}
 
                     {/* EMAIL INPUT */}
