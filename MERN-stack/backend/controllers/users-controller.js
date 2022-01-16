@@ -1,5 +1,6 @@
 // const uuid = require("uuid").v4
 const { validationResult } = require("express-validator")
+const bcrypt = require("bcryptjs")
 const mongoose = require("mongoose")
 
 const User = require("../models/user")
@@ -113,12 +114,25 @@ const signUp = async (req, res, next) => {
         return next(error)
     }
 
+    let hashedPassword
+
+    try {
+        hashedPassword = await bcrypt.hash(password, 12)
+    } catch(err) {
+        const error = new HttpError(
+            "Could not create new user. Please try again.", 500
+        )
+
+        return next(error)
+    }
+    
+
     // if not, create a new instance of the User model, have an array for places since this will be changed when this user creates a place
     const createdUser = new User({
         name,
         email,
         image: req.file.path,
-        password,
+        password: hashedPassword,
         places: []
     })
 
