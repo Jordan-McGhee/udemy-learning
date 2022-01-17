@@ -1,6 +1,8 @@
 // const uuid = require("uuid").v4
 const { validationResult } = require("express-validator")
 const bcrypt = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+
 const mongoose = require("mongoose")
 
 const User = require("../models/user")
@@ -147,6 +149,23 @@ const signUp = async (req, res, next) => {
 
         return next(error)
     }
+
+    let token
+
+    try {
+        token = jwt.sign(
+            { userID: createdUser.id, email: createdUser.email },
+            'super_secret_dont_share',
+            { expiresIn: "1h" }
+        )
+    } catch(err) {
+        const error = new HttpError(
+            "Signing up failed, please try again.",
+            500
+        )
+    }
+
+    token = jwt.sign({userID: createdUser.id, email: createdUser.email})
 
     res.status(201).json({ user : createdUser.toObject({ getters: true }) })
 }
