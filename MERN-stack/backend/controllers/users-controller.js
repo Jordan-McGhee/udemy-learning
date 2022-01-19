@@ -167,7 +167,7 @@ const signUp = async (req, res, next) => {
 
     token = jwt.sign({userID: createdUser.id, email: createdUser.email})
 
-    res.status(201).json({ user : createdUser.toObject({ getters: true }) })
+    res.status(201).json({ userID: createdUser.id, email: createdUser.email, token: token})
 }
 
 const userLogin = async (req, res, next) => {
@@ -239,10 +239,32 @@ const userLogin = async (req, res, next) => {
         return next(error)
     }
 
+    let token
+
+    try {
+        token = jwt.sign(
+            { userID: existingUser.id, email: existingUser.email },
+            'super_secret_dont_share',
+            { expiresIn: "1h" }
+        )
+    } catch(err) {
+        const error = new HttpError(
+            "Logging in failed, please try again.",
+            500
+        )
+    }
+
+    token = jwt.sign({userID: existingUser.id, email: existingUser.email})
+
     res.json({
-        message: "Logged in!",
-        user: existingUser.toObject({ gettters: true })})
+        userID: existingUser.id,
+        email: existingUser.email,
+        token: token
+    })
+
 }
+
+
 
 // functions exported to use in routes
 exports.getUserList = getUserList
