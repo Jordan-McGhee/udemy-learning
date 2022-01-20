@@ -12,22 +12,22 @@ import { AuthContext } from "./shared/context/auth-context";
 const App = () => {
 
   // this holds the current state to determine if user is logged in or not. Starts off as false
-  const [ isLoggedIn, setIsLoggedIn ] = useState(false)
+  const [ token, setToken ] = useState(false)
   const [ userID, setUserID ] = useState(null)
 
-  const login = useCallback((userID) => {
-    setIsLoggedIn(true)
+  const login = useCallback((userID, token) => {
+    setToken(token)
     setUserID(userID)
   }, [])
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false)
+    setToken(null)
     setUserID(null)
   }, [])
 
   let routes
 
-  if (isLoggedIn) {
+  if (token) {
     routes = (
       <Switch>
         {/* users route */}
@@ -83,7 +83,8 @@ const App = () => {
 
   return (
     <AuthContext.Provider value = {{
-      isLoggedIn: isLoggedIn,
+      isLoggedIn: !!token,
+      token: token,
       userID: userID,
       login: login,
       logout: logout

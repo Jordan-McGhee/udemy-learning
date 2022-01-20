@@ -69,7 +69,10 @@ const NewPlace = () => {
                 // }),
                 // { "Content-Type": "application/json"}
 
-                formData
+                formData,
+                {
+                    Authorization: "Bearer " + auth.token
+                }
             )
 
             // REDIRECT USER

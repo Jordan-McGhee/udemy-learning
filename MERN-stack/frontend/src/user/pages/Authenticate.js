@@ -97,8 +97,7 @@ const Authenticate = () => {
     
                 // setIsLoading(false)
 
-                auth.login(responseData.userID)
-                console.log(responseData.userID)
+                auth.login(responseData.userID, responseData.token)
             } catch(err) {
                 // don't need anything here because it's handled in the hook. Can be left blank
 
@@ -149,8 +148,7 @@ const Authenticate = () => {
 
                 // setIsLoading(false)
 
-                auth.login(responseData.userID)
-                console.log(responseData.userID)
+                auth.login(responseData.userID, responseData.token)
 
             } catch(err) {
 
