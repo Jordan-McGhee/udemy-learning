@@ -165,8 +165,6 @@ const signUp = async (req, res, next) => {
         )
     }
 
-    token = jwt.sign({userID: createdUser.id, email: createdUser.email})
-
     res.status(201).json({ userID: createdUser.id, email: createdUser.email, token: token})
 }
 
@@ -253,8 +251,6 @@ const userLogin = async (req, res, next) => {
             500
         )
     }
-
-    token = jwt.sign({userID: existingUser.id, email: existingUser.email})
 
     res.json({
         userID: existingUser.id,
