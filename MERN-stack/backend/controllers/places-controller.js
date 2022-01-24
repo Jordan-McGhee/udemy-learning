@@ -222,6 +222,14 @@ const updatePlace = async (req, res, next) => {
         return next(error)
     }
 
+    if (updatedPlace.creator.toString() !== req.userData.userID) {
+        const error = new HttpError(
+            "You are not allowed to edit this place!", 401
+        )
+
+        return next(error)
+    }
+
     // update the place's title and description to the values we pulled from the req.body
     updatedPlace.title = title
     updatedPlace.description = description
@@ -271,6 +279,14 @@ const deletePlace = async (req, res, next) => {
     if (!place) {
         const error = new HttpError(
             "Could not find place for this ID", 404
+        )
+
+        return next(error)
+    }
+
+    if (place.creator.id !== req.userData.userID) {
+        const error = new HttpError(
+            "You are not allowed to delete this place!", 401
         )
 
         return next(error)
