@@ -15,10 +15,19 @@ const App = () => {
   const [ token, setToken ] = useState(false)
   const [ userID, setUserID ] = useState(null)
 
-  const login = useCallback((userID, token) => {
+  const login = useCallback((userID, token, expirationDate) => {
     setToken(token)
     setUserID(userID)
-    localStorage.setItem("userData", JSON.stringify({userID: userID, token: token}))
+    const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
+
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({
+        userID: userID,
+        token: token,
+        expiration: tokenExpirationDate.toISOString()
+      })
+    )
   }, [])
 
   const logout = useCallback(() => {
@@ -30,9 +39,13 @@ const App = () => {
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"))
   
-    if (storedData && storedData.token) {
-      login(storedData.userID, storedData.token)
-    }
+    if (
+      storedData &&
+      storedData.token &&
+      new Date(storedData.expiration) > new Date()
+    ) {
+        login(storedData.userID, storedData.token, new Date(storedData.expiration))
+      }
   }, [login])
 
   let routes
