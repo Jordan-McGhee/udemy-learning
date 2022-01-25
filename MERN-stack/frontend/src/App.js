@@ -9,17 +9,21 @@ import UpdatePlace from "./places/pages/UpdatePlace";
 import Authenticate from "./user/pages/Authenticate";
 import { AuthContext } from "./shared/context/auth-context";
 
+let logoutTimer
+
 const App = () => {
 
   // this holds the current state to determine if user is logged in or not. Starts off as false
   const [ token, setToken ] = useState(false)
+  const [ tokenExpirationDate, setTokenExpirationDate ] = useState()
   const [ userID, setUserID ] = useState(null)
 
   const login = useCallback((userID, token, expirationDate) => {
     setToken(token)
     setUserID(userID)
     const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
-
+    setTokenExpirationDate(tokenExpirationDate)
+    
     localStorage.setItem(
       "userData",
       JSON.stringify({
@@ -32,9 +36,20 @@ const App = () => {
 
   const logout = useCallback(() => {
     setToken(null)
+    setTokenExpirationDate(null)
     setUserID(null)
     localStorage.removeItem("userData")
   }, [])
+
+  useEffect(() => {
+    if(token && tokenExpirationDate) {
+      const remainingTime = tokenExpirationDate.getTime() - new Date().getTime()
+      logoutTimer = setTimeout(logout, remainingTime)
+    } else {
+      clearTimeout(logoutTimer)
+    }
+
+  }, [token, logout, tokenExpirationDate])
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"))
