@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom'
 
 import UserPlaces from "./places/pages/UserPlaces";
@@ -8,60 +8,11 @@ import MainNavigation from "./shared/components/Navigation/MainNavigation";
 import UpdatePlace from "./places/pages/UpdatePlace";
 import Authenticate from "./user/pages/Authenticate";
 import { AuthContext } from "./shared/context/auth-context";
-
-let logoutTimer
+import { useAuth } from "./shared/hooks/auth-hook";
 
 const App = () => {
 
-  // this holds the current state to determine if user is logged in or not. Starts off as false
-  const [ token, setToken ] = useState(false)
-  const [ tokenExpirationDate, setTokenExpirationDate ] = useState()
-  const [ userID, setUserID ] = useState(null)
-
-  const login = useCallback((userID, token, expirationDate) => {
-    setToken(token)
-    setUserID(userID)
-    const tokenExpirationDate = expirationDate || new Date(new Date().getTime() + 1000 * 60 * 60)
-    setTokenExpirationDate(tokenExpirationDate)
-    
-    localStorage.setItem(
-      "userData",
-      JSON.stringify({
-        userID: userID,
-        token: token,
-        expiration: tokenExpirationDate.toISOString()
-      })
-    )
-  }, [])
-
-  const logout = useCallback(() => {
-    setToken(null)
-    setTokenExpirationDate(null)
-    setUserID(null)
-    localStorage.removeItem("userData")
-  }, [])
-
-  useEffect(() => {
-    if(token && tokenExpirationDate) {
-      const remainingTime = tokenExpirationDate.getTime() - new Date().getTime()
-      logoutTimer = setTimeout(logout, remainingTime)
-    } else {
-      clearTimeout(logoutTimer)
-    }
-
-  }, [token, logout, tokenExpirationDate])
-
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("userData"))
-  
-    if (
-      storedData &&
-      storedData.token &&
-      new Date(storedData.expiration) > new Date()
-    ) {
-        login(storedData.userID, storedData.token, new Date(storedData.expiration))
-      }
-  }, [login])
+  const { token, login, logout, userID } = useAuth()
 
   let routes
 
