@@ -203,6 +203,7 @@ const updatePlace = async (req, res, next) => {
             new HttpError("Invalid inputs passed, please check your data.", 422)
         )
     }
+    
 
     // grab the necessary properties from the form and grab place ID from the URL
     const { title, description, address } = req.body
