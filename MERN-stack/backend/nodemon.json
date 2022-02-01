@@ -1,0 +1,8 @@
+{
+    "env": {
+        "DB_USER": "JordanMcGhee",
+        "DB_PASSWORD": "FPe9Me4254QVi4w",
+        "DB_NAME": "MERN-course",
+        "JWT_KEY": "super_secret_dont_share"
+    }
+}

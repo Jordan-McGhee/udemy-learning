@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
             throw new Error("Authentication failed - check-auth.js")
         }
 
-        const decodedToken = jwt.verify(token, 'super_secret_dont_share')
+        const decodedToken = jwt.verify(token, process.env.JTW_KEY)
         req.userData = {
             userID: decodedToken.userID
         }

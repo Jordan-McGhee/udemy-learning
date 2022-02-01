@@ -6,7 +6,9 @@ const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 
 const password = "FPe9Me4254QVi4w"
-const url = "mongodb+srv://JordanMcGhee:FPe9Me4254QVi4w@mern.xbi7o.mongodb.net/MERN-course?retryWrites=true&w=majority"
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@mern.xbi7o.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
+
+// "mongodb+srv://JordanMcGhee:FPe9Me4254QVi4w@mern.xbi7o.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority"
 
 const placesRoutes = require("./routes/places-routes")
 const usersRoutes = require("./routes/user-routes")
