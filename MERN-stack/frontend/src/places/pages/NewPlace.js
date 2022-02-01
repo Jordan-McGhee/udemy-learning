@@ -57,7 +57,7 @@ const NewPlace = () => {
             formData.append("creator", auth.userID)
 
             await sendRequest(
-                'http://localhost:5000/api/places',
+                `${process.env.REACT_APP_BACKEND_URL}/places`,
                 'POST',
                 
                 // OLD CODE BEFORE IMAGE UPLOAD
