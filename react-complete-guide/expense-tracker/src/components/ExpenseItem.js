@@ -1,4 +1,5 @@
 import "./ExpenseItem.css"
+import ExpenseDate from "./ExpenseDate"
 
 function ExpenseItem (props) {
 
@@ -6,7 +7,7 @@ function ExpenseItem (props) {
         <div className="expense-item">
 
             <div>
-                { props.date.toISOString() }
+                <ExpenseDate date = { props.date } />
             </div>
 
             <div className="expense-item__description">
