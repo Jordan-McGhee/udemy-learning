@@ -1,6 +1,6 @@
 import ExpenseList from "./components/expenses/ExpenseList";
 
-function App() {
+const App = () => {
 
   const expenses = [
     {
