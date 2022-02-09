@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import "./ExpenseList.css"
-import ExpenseItem from "./ExpenseItem"
-import ExpensesFilter from "../ExpenseFilter/ExpenseFilter"
+import "./Expenses.css"
+import ExpensesFilter from '../ExpenseFilter/ExpenseFilter';
 import Card from "../ui/Card"
+import ExpensesList from './ExpensesList';
 
-const ExpenseList = (props) => {
+const Expenses = (props) => {
 
     const [ chosenYear, setChosenYear ] = useState("2022")
 
@@ -18,6 +18,7 @@ const ExpenseList = (props) => {
         return expense.date.getFullYear().toString() === chosenYear
     })
 
+
     return (
         
         <Card className="expenses">
@@ -26,14 +27,7 @@ const ExpenseList = (props) => {
 
             {/* EXPENSE ITEMS */}
 
-            { filteredExpenses.map(expense => 
-                <ExpenseItem
-                    key = { expense.id }
-                    title = { expense.title }
-                    amount = { expense.amount }
-                    date = { expense.date }
-                />
-            )}
+            <ExpensesList expenses = { filteredExpenses } />
 
             {/* old map method to display all expenses */}
             {/* { props.expenses.map(expense => 
@@ -49,4 +43,4 @@ const ExpenseList = (props) => {
     )
 }
 
-export default ExpenseList
+export default Expenses
