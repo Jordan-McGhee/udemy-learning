@@ -38,11 +38,15 @@ const AddUser = (props) => {
 
             <form onSubmit = { addUserHandler }>
 
-                <label htmlFor = "username">Username</label>
-                <input id = "username" type = "text" value = { username } onChange = { usernameChangeHandler }/>
+                <div className = "input">
+                    <label htmlFor = "username">Username</label>
+                    <input id = "username" type = "text" value = { username } onChange = { usernameChangeHandler }/>
+                </div>
 
-                <label htmlFor = "age">Age</label>
-                <input id = "age" type = "number" step = "1" value = { userAge } onChange = { userAgeChangeHandler }/>
+                <div className = "input">
+                    <label htmlFor = "age">Age</label>
+                    <input id = "age" type = "number" step = "1" value = { userAge } onChange = { userAgeChangeHandler }/>
+                </div>
 
                 <button type = "submit">Add User</button>
 
