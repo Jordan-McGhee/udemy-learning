@@ -46,7 +46,7 @@ const passwordReducer = ( state, action ) => {
   return {
     value: "",
     isValid: false
-  }
+  } 
 
 }
 
