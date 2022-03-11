@@ -128,9 +128,9 @@ const Login = (props) => {
     if (formIsValid) {
       authContext.onLogin(emailState.value, passwordState.value);
     } else if (!emailIsValid) {
-      emailRef.current.activate()
+      emailRef.current.focus()
     } else {
-      passwordRef.current.activate()
+      passwordRef.current.focus()
     }
     
   };
