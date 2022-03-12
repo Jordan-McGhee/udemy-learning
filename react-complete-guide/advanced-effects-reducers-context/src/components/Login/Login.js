@@ -155,7 +155,7 @@ const Login = (props) => {
           id = "password"
           label = "Password"
           type = "password"
-          isValid = { passwordIsValid}
+          isValid = { passwordIsValid }
           value = { passwordState.value }
           onChange = { passwordChangeHandler }
           onBlur = { validatePasswordHandler }
