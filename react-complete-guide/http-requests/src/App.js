@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 
 import MoviesList from './components/MoviesList';
 import './App.css';
@@ -27,7 +27,8 @@ function App() {
   // }
 
   // ASYNC/AWAIT VERSION
-  const fetchMoviesHandler = async () => {
+  // useCallback to 
+  const fetchMoviesHandler = useCallback(async () => {
 
     setIsLoading(true)
     setError(null)
@@ -60,7 +61,13 @@ function App() {
     }
 
     setIsLoading(false)
-  }
+  }, [])
+
+  // useEffect to call our fetch function immediately upon loading
+  useEffect(() => {
+    fetchMoviesHandler()
+  }, [ fetchMoviesHandler ])
+
 
   return (
     <React.Fragment>
