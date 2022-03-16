@@ -62,6 +62,7 @@ const SimpleInput = (props) => {
     // setEnteredNameTouched(true)
 
     if (!enteredNameIsValid) {
+      console.log(`Nope: ${enteredName} & ${enteredNameIsValid}`)
       return
     }
 
@@ -111,7 +112,7 @@ const SimpleInput = (props) => {
       </div>
 
       <div className="form-actions">
-        <button type="submit">Submit</button>
+        <button type="submit" disabled = {!enteredNameIsValid}>Submit</button>
         <button onClick = { enteredNameCheck }>check</button>
       </div>
     </form>

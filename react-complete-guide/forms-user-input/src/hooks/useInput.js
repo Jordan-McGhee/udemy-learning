@@ -15,11 +15,18 @@ const useInput = (validateValue) => {
         setIsTouched(true)
     }
 
+    const resetInput = () => {
+        setEnteredValue("")
+        setIsTouched(false)
+    }
+
     return {
         value: enteredValue,
+        isValid: valueIsValid,
         hasError,
         valueChangeHandler,
-        inputBlurHandler
+        inputBlurHandler,
+        resetInput
     }
 }
 
