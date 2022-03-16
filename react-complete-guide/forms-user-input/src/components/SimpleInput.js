@@ -1,25 +1,36 @@
 import { useState } from "react";
 
+import useInput from "../hooks/useInput";
+
 const SimpleInput = (props) => {
 
-  // STATE VERSION FOR NAME INPUT
-  const [ enteredName, setEnteredName ] = useState("")
-  const [ enteredNameTouched, setEnteredNameTouched ] = useState(false)
+  const {
+    value: enteredName, 
+    isValid: enteredNameIsValid,
+    hasError: nameInputHasError,
+    valueChangeHandler: nameInputChangeHandler,
+    inputBlurHandler: nameInputBlurHandler,
+    resetInput: resetNameInput
+  } = useInput(value => value.trim() !== "")
 
-  const enteredNameIsValid = enteredName.trim() !== ""
+  // // STATE VERSION FOR NAME INPUT before useInput Hook
+  // const [ enteredName, setEnteredName ] = useState("")
+  // const [ enteredNameTouched, setEnteredNameTouched ] = useState(false)
 
-  const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched
+  // const enteredNameIsValid = enteredName.trim() !== ""
 
-  const nameInputChangeHandler = event => {
-    setEnteredName(event.target.value)
-  }
+  // const nameInputIsInvalid = !enteredNameIsValid && enteredNameTouched
 
-  // REF VERSION
-  // const nameInputRef = useRef()
+  // const nameInputChangeHandler = event => {
+  //   setEnteredName(event.target.value)
+  // }
 
-  const nameInputBlurHandler = event => {
-    setEnteredNameTouched(true)
-  }
+  // // REF VERSION
+  // // const nameInputRef = useRef()
+
+  // const nameInputBlurHandler = event => {
+  //   setEnteredNameTouched(true)
+  // }
 
 
   // EMAIL STATES
@@ -41,24 +52,27 @@ const SimpleInput = (props) => {
 
   if (enteredNameIsValid && enteredEmailIsValid) {
     formIsValid = true
+    console.log(`changed form validity: ${formIsValid}`)
   }
 
 
   const formSubmissionHandler = event => {
     event.preventDefault()
 
-    setEnteredNameTouched(true)
+    // setEnteredNameTouched(true)
 
     if (!enteredNameIsValid) {
       return
     }
 
-    setEnteredName(true)
+    // setEnteredName(true)
 
-    // STATE name
-    console.log(enteredName)
-    setEnteredName("")
-    setEnteredNameTouched(false)
+    // STATE name before hook
+    // console.log(enteredName)
+    // setEnteredName("")
+    // setEnteredNameTouched(false)
+
+    resetNameInput()
 
     // email
     console.log(enteredEmail)
@@ -70,8 +84,12 @@ const SimpleInput = (props) => {
     // console.log(enteredValue)
   }
 
-  const nameInputClasses = !nameInputIsInvalid ? 'form-control' : 'form-control invalid'
+  const nameInputClasses = !nameInputHasError ? 'form-control' : 'form-control invalid'
   const emailInputClasses = !emailInputIsInvalid ? 'form-control' : 'form-control invalid'
+
+  const enteredNameCheck = () => {
+    console.log(enteredName)
+  }
 
   return (
     <form onSubmit= { formSubmissionHandler }>
@@ -81,7 +99,7 @@ const SimpleInput = (props) => {
         <label htmlFor='name'>Your Name</label>
         <input type='text' id='name' onChange = { nameInputChangeHandler } value = { enteredName } onBlur = { nameInputBlurHandler }/>
 
-        { nameInputIsInvalid && <p className =  "error-text">Name must not be empty.</p> }
+        { nameInputHasError && <p className =  "error-text">Name must not be empty.</p> }
       </div>
 
       {/* EMAIL INPUT */}
@@ -93,10 +111,14 @@ const SimpleInput = (props) => {
       </div>
 
       <div className="form-actions">
-        <button disabled = { !formIsValid }>Submit</button>
+        <button type="submit">Submit</button>
+        <button onClick = { enteredNameCheck }>check</button>
       </div>
     </form>
   );
 };
 
 export default SimpleInput;
+
+// SMALL BUG - NEED TO FIX
+// ENTERED NAME NOT REGISTERING, SO I CAN'T SUBMIT FORM. NEED TO FIND OUT WHY IT ISN'T WORKING SO I CAN MOVE ON
