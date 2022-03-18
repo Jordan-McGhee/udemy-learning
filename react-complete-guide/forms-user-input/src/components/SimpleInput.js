@@ -1,18 +1,10 @@
-import { useState } from "react";
+// import { useState } from "react";
 
 import useInput from "../hooks/useInput";
 
 const SimpleInput = (props) => {
 
-  const {
-    value: enteredName, 
-    isValid: enteredNameIsValid,
-    hasError: nameInputHasError,
-    valueChangeHandler: nameInputChangeHandler,
-    inputBlurHandler: nameInputBlurHandler,
-    resetInput: resetNameInput
-  } = useInput(value => value.trim() !== "")
-
+  // CODE BEFORE CUSTOM HOOK
   // // STATE VERSION FOR NAME INPUT before useInput Hook
   // const [ enteredName, setEnteredName ] = useState("")
   // const [ enteredNameTouched, setEnteredNameTouched ] = useState(false)
@@ -33,26 +25,46 @@ const SimpleInput = (props) => {
   // }
 
 
-  // EMAIL STATES
-  const [ enteredEmail, setEnteredEmail ] = useState("")
-  const [ enteredEmailTouched, setEnteredEmailTouched ] = useState(false)
+  // // EMAIL STATES
+  // const [ enteredEmail, setEnteredEmail ] = useState("")
+  // const [ enteredEmailTouched, setEnteredEmailTouched ] = useState(false)
 
-  const enteredEmailIsValid = enteredEmail.trim() !== "" & enteredEmail.includes("@")
-  const emailInputIsInvalid = !enteredEmailIsValid && enteredEmailTouched
+  // const enteredEmailIsValid = enteredEmail.trim() !== "" & enteredEmail.includes("@")
+  // const emailInputIsInvalid = !enteredEmailIsValid && enteredEmailTouched
 
-  const emailInputChangeHandler = event => {
-    setEnteredEmail(event.target.value)
-  }
+  // const emailInputChangeHandler = event => {
+  //   setEnteredEmail(event.target.value)
+  // }
 
-  const emailInputBlurHandler = event => {
-    setEnteredEmailTouched(true)
-  }
+  // const emailInputBlurHandler = event => {
+  //   setEnteredEmailTouched(true)
+  // }
+
+  // NAME CUSTOM HOOK
+  const {
+    value: enteredName, 
+    isValid: enteredNameIsValid,
+    hasError: nameInputHasError,
+    valueChangeHandler: nameInputChangeHandler,
+    inputBlurHandler: nameInputBlurHandler,
+    resetInput: resetNameInput
+  } = useInput(value => value.trim() !== "")
+
+  // EMAIL CUSTOM HOOK
+  const {
+    value: enteredEmail, 
+    isValid: enteredEmailIsValid,
+    hasError: emailInputHasError,
+    valueChangeHandler: emailInputChangeHandler,
+    inputBlurHandler: emailInputBlurHandler,
+    resetInput: resetEmailInput
+  } = useInput(value => value.trim()!== "" & value.includes("@"))
 
   let formIsValid = false
 
   if (enteredNameIsValid && enteredEmailIsValid) {
     formIsValid = true
-    console.log(`changed form validity: ${formIsValid}`)
+    // console.log(`changed form validity: ${formIsValid}`)
   }
 
 
@@ -61,8 +73,7 @@ const SimpleInput = (props) => {
 
     // setEnteredNameTouched(true)
 
-    if (!enteredNameIsValid) {
-      console.log(`Nope: ${enteredName} & ${enteredNameIsValid}`)
+    if (!formIsValid) {
       return
     }
 
@@ -73,24 +84,26 @@ const SimpleInput = (props) => {
     // setEnteredName("")
     // setEnteredNameTouched(false)
 
-    resetNameInput()
-
     // email
-    console.log(enteredEmail)
-    setEnteredEmail("")
-    setEnteredEmailTouched(false)
+    // console.log(enteredEmail)
+    // setEnteredEmail("")
+    // setEnteredEmailTouched(false)
 
     // REF
     // const enteredValue = nameInputRef.current.value
     // console.log(enteredValue)
+
+    resetNameInput()
+    resetEmailInput()
   }
 
   const nameInputClasses = !nameInputHasError ? 'form-control' : 'form-control invalid'
-  const emailInputClasses = !emailInputIsInvalid ? 'form-control' : 'form-control invalid'
+  const emailInputClasses = !emailInputHasError ? 'form-control' : 'form-control invalid'
 
-  const enteredNameCheck = () => {
-    console.log(enteredName)
-  }
+  // DEBUGGING CODE FOR ENTERED NAME
+  // const enteredNameCheck = () => {
+  //   console.log(enteredName)
+  // }
 
   return (
     <form onSubmit= { formSubmissionHandler }>
@@ -108,18 +121,15 @@ const SimpleInput = (props) => {
         <label htmlFor='name'>Your Email</label>
         <input type='text' id='name' onChange = { emailInputChangeHandler } value = { enteredEmail } onBlur = { emailInputBlurHandler }/>
 
-        { emailInputIsInvalid && <p className =  "error-text">Email must not be empty and must be a valid email.</p> }
+        { emailInputHasError && <p className =  "error-text">Email must not be empty and must be a valid email.</p> }
       </div>
 
       <div className="form-actions">
         <button type="submit" disabled = {!enteredNameIsValid}>Submit</button>
-        <button onClick = { enteredNameCheck }>check</button>
+        {/* <button onClick = { enteredNameCheck }>check</button> */}
       </div>
     </form>
   );
 };
 
 export default SimpleInput;
-
-// SMALL BUG - NEED TO FIX
-// ENTERED NAME NOT REGISTERING, SO I CAN'T SUBMIT FORM. NEED TO FIND OUT WHY IT ISN'T WORKING SO I CAN MOVE ON
