@@ -1,6 +1,7 @@
 import { Route } from "react-router-dom"
 
 import MainHeader from "./components/MainHeader";
+import ProductDetail from "./pages/ProductDetail";
 import Products from "./pages/Products";
 import Welcome from "./pages/Welcome";
 
@@ -24,6 +25,12 @@ function App() {
 
         </Route>
 
+        <Route path="/product-detail/:productID">
+
+          <ProductDetail />
+          
+        </Route>
+
       </main>
 
     </div>
@@ -31,3 +38,7 @@ function App() {
 }
 
 export default App;
+
+// our-domain.com/welcome => Welcome Component
+// our-domain.com/products => Products Component
+// our-domain.com/product-detail/a-book => Product Detail Component, Book

@@ -1,6 +1,17 @@
+import { Link } from "react-router-dom"
+
 const Products = () => {
     return (
-        <h1>The Products Page</h1>
+        <div>
+            <h1>The Products Page</h1>
+
+            <ul>
+                <li>A Book</li>
+                <li>A Carpet</li>
+                <li>An Online Course</li>
+            </ul>
+            
+        </div>
     )
 }
 
