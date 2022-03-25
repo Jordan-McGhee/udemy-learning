@@ -10,6 +10,7 @@ const AuthForm = () => {
   const passwordRef = useRef()
 
   const [isLogin, setIsLogin] = useState(true);
+  const [ isLoading, setIsLoading ] = useState(false)
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -21,9 +22,62 @@ const AuthForm = () => {
     const userEmail = emailRef.current.value
     const userPassword = passwordRef.current.value
 
+    // ABOUT TO SEND REQUEST SO WE ARE LOADING/SENDING DATA
+    setIsLoading(true)
+
     if (isLogin) {
 
+      // LOGIN SECTION
+      // SEND REQUEST TO FIREBASE API AND HANDLE RESPONSE/ERRORS
+
+      fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBy8yZwJ5ettMf0quJfkjPK_ofPy7adK0U",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: userEmail,
+          password: userPassword,
+          returnSecureToken: true
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+
+      .then(res => {
+
+        setIsLoading(false)
+
+        if (res.ok) {
+          console.log("Logged in!")
+          return res.json()
+
+        } else {
+          // BLOCK TO HANDLE IF THERE WAS AN ERROR
+          return res.json().then(data => {
+            // show error modal
+            let errorMessage = 'Authentication failed'
+
+            if (data && data.error && data.error.message) {
+              errorMessage = data.error.message
+            }
+
+            throw new Error(errorMessage)
+          })
+        }
+
+      })
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => {
+        alert(err.message)
+      })
+
     } else {
+
+      // SIGNUP SECTION
+      // SEND REQUEST TO FIREBASE API AND PROVIDE INFO FROM USER INPUT
+
       fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBy8yZwJ5ettMf0quJfkjPK_ofPy7adK0U",
       {
         method: "POST",
@@ -35,16 +89,40 @@ const AuthForm = () => {
         headers: {
           "Content-Type": 'application/json'
         }
-      }).then(res => {
+      })
+      
+      // PROMISE TO HANDLE THE RESPONSE
+      .then(res => {
+
+        // NO LONGER LOADING SINCE WE HAVE RESPONSE
+        setIsLoading(false)
+
         if (res.ok) {
+          console.log("Signed up!")
+          return res.json()
 
         } else {
+
+          // BLOCK TO HANDLE IF THERE WAS AN ERROR
           return res.json().then(data => {
             // show error modal
-            console.log(data)
+            let errorMessage = 'Authentication failed'
+
+            if (data && data.error && data.error.message) {
+              errorMessage = data.error.message
+            }
+
+            throw new Error(errorMessage)
           })
         }
 
+      })
+
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => {
+        alert(err.message)
       })
     }
 
@@ -64,7 +142,9 @@ const AuthForm = () => {
           <input type='password' id='password' required ref={ passwordRef }/>
         </div>
         <div className={classes.actions}>
-          <button>{isLogin ? 'Login' : 'Create Account'}</button>
+          { !isLoading && <button>{isLogin ? 'Login' : 'Create Account'}</button> }
+          { isLoading && <p>Sending request...</p>}
+
           <button
             type='button'
             className={classes.toggle}
