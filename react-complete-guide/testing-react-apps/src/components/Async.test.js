@@ -18,5 +18,3 @@ describe('Async component', () => {
         expect(listItemElements).not.toHaveLength(0)
     })
 })
-
-
